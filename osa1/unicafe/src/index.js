@@ -42,19 +42,30 @@ const Feedback = ({ good, neutral, bad, all, average, positive, setGood, setNeut
 }
 
 const StatisticsLine = ({ text, statistic }) => (
-    <div>{text} {statistic}</div>
+    <tr>
+        <td>
+            {text}
+        </td>
+        <td>
+            {statistic}
+        </td>
+    </tr>
 )
 
 const Statistics = ({ good, neutral, bad, all, average, positive }) => {
     if (all > 0) {
         return <>
             <h2>statistics</h2>
-            <StatisticsLine text='good' statistic={good} />
-            <StatisticsLine text='neutral' statistic={neutral} />
-            <StatisticsLine text='bad' statistic={bad} />
-            <StatisticsLine text='all' statistic={all} />
-            <StatisticsLine text='average' statistic={average} />
-            <StatisticsLine text='positive' statistic={positive + '%'} />
+            <table >
+                <tbody>
+                    <StatisticsLine text='good' statistic={good} />
+                    <StatisticsLine text='neutral' statistic={neutral} />
+                    <StatisticsLine text='bad' statistic={bad} />
+                    <StatisticsLine text='all' statistic={all} />
+                    <StatisticsLine text='average' statistic={average} />
+                    <StatisticsLine text='positive' statistic={positive + ' %'} />
+                </tbody>
+            </table>
         </>
     }
 
