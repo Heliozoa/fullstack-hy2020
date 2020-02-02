@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const Header = (props) => (
-    <h1>{props.course.name}</h1>
+const Header = ({ course }) => (
+    <h1>{course.name}</h1>
 )
 
-const Part = (props) => (
+const Part = ({ name, count }) => (
     <p>
-        {props.name} {props.count}
+        {name} {count}
     </p>
 )
 
@@ -15,15 +15,18 @@ const Content = ({ parts }) => (
     parts.map(part => <Part key={part.name} name={part.name} count={part.exercises} />)
 )
 
-const Total = (props) => (
-    <p>Number of exercises {props.course.parts[0].exercises + props.course.parts[1].exercises + props.course.parts[2].exercises}</p>
-)
+const Total = ({ parts }) => {
+    let total = 0
+    parts.forEach(part => total += part.exercises)
+    return <p>Number of exercises {total}</p>
+}
 
 const Course = ({ course }) => {
     return (
         <>
             <Header course={course} />
             <Content parts={course.parts} />
+            <Total parts={course.parts} />
         </>
     )
 }
