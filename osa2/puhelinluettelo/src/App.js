@@ -3,6 +3,7 @@ import Filter from './components/Filter.js'
 import PersonForm from './components/PersonForm.js'
 import Persons from './components/Persons.js'
 import Success from './components/Success.js'
+import Error from './components/Error.js'
 import personsService from './services/persons.js'
 
 const App = () => {
@@ -12,6 +13,8 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const [successMsg, setSuccessMsg] = useState(null)
   const [successTimer, setSuccessTimer] = useState(null)
+  const [errorMsg, setErrorMsg] = useState(null)
+  const [errorTimer, setErrorTimer] = useState(null)
 
   useEffect(() => {
     personsService.getAll()
@@ -27,6 +30,15 @@ const App = () => {
     setSuccessTimer(timerId)
   }
 
+  const updateErrorMsg = msg => {
+    setErrorMsg(msg)
+    clearTimeout(errorTimer)
+    const timerId = setTimeout(() => {
+      setErrorMsg(null)
+    }, 5000)
+    setErrorTimer(timerId)
+  }
+
   const submitPerson = (event) => {
     event.preventDefault()
     const search = persons.filter(p => p.name === newName)
@@ -34,9 +46,16 @@ const App = () => {
     if (search.length > 0) {
       const updated = { ...search[0], number: newNumber }
       personsService.update(updated)
-      const updatedPersons = persons.map(p => p.id === updated.id ? updated : p)
-      setPersons(updatedPersons)
-      updateSuccessMsg(`updated ${updated.name}`)
+        .then(_ => {
+          const updatedPersons = persons.map(p => p.id === updated.id ? updated : p)
+          setPersons(updatedPersons)
+          updateSuccessMsg(`updated ${updated.name}`)
+        })
+        .catch(err => {
+          const updatedPersons = persons.filter(p => p.id !== updated.id)
+          setPersons(updatedPersons)
+          updateErrorMsg(`Information of ${updated.name} has already been removed from server`)
+        })
     } else {
       const newPerson = { name: newName, number: newNumber }
       personsService.create(newPerson)
@@ -61,6 +80,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Success msg={successMsg} />
+      <Error msg={errorMsg} />
 
       <Filter filter={filter} updateFilter={updateFilter} />
 
