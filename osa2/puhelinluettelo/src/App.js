@@ -26,6 +26,13 @@ const App = () => {
     }
   }
 
+  const deleteHandler = (id) => {
+    personsService.remove(id)
+      .then(res => {
+        const newPersons = persons.filter(person => person.id !== id)
+        setPersons(newPersons)
+      })
+  }
   const updateName = (event) => setNewName(event.target.value)
   const updateNumber = (event) => setNewNumber(event.target.value)
   const updateFilter = (event) => setFilter(event.target.value)
@@ -39,7 +46,7 @@ const App = () => {
       <PersonForm newName={newName} submitPerson={submitPerson} updateName={updateName} updateNumber={updateNumber} />
 
       <h3>Numbers</h3>
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} deleteHandler={deleteHandler} />
     </div >
   )
 }

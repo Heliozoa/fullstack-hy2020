@@ -1,9 +1,15 @@
 import React from 'react'
 
-const Persons = ({ persons, filter }) => (
-    persons
+const Person = ({ person, deleteHandler }) => {
+
+    return <div>{person.name} {person.number} <button onClick={() => deleteHandler(person.id)}>delete</button></div>
+}
+
+const Persons = ({ persons, filter, deleteHandler }) => {
+
+    return persons
         .filter(p => p.name.toLowerCase().includes(filter.toLowerCase()))
-        .map(p => <div key={p.name}>{p.name} {p.number}</div>)
-)
+        .map(p => <Person key={p.name} person={p} deleteHandler={deleteHandler} />)
+}
 
 export default Persons
