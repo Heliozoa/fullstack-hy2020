@@ -17,8 +17,13 @@ const App = () => {
 
   const submitPerson = (event) => {
     event.preventDefault()
-    if (persons.map(p => p.name).includes(newName)) {
-      alert(`${newName} is already added to phonebook`)
+    const search = persons.filter(p => p.name === newName)
+    console.log(search)
+    if (search.length > 0) {
+      const updated = { ...search[0], number: newNumber }
+      personsService.update(updated)
+      const updatedPersons = persons.map(p => p.id === updated.id ? updated : p)
+      setPersons(updatedPersons)
     } else {
       const newPerson = { name: newName, number: newNumber }
       personsService.create(newPerson)
