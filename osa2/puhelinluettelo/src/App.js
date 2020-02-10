@@ -69,6 +69,11 @@ const App = () => {
               const newPersons = persons.filter(p => p.id !== updated.id)
               setPersons([...newPersons, updated])
             })
+            .catch(e => {
+              const msg = e.response.data.error
+              console.error(msg)
+              updateErrorMsg(msg)
+            })
         }
       })
   }
