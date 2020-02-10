@@ -18,7 +18,6 @@ const remove = id => {
 }
 
 const update = person => {
-    console.log('updating', person)
     return axios.put(idUrl(person.id), person)
 }
 

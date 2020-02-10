@@ -41,10 +41,28 @@ const App = () => {
 
   const submitPerson = (event) => {
     event.preventDefault()
-    const newPerson = { name: newName, number: newNumber }
-    personsService.create(newPerson)
-      .then(newPerson => setPersons(persons.concat(newPerson)))
-    updateSuccessMsg(`added ${newPerson.name}`)
+    personsService.getAll()
+      .then(persons => {
+        const existing = persons.find(p => p.name === newName)
+        if (!existing) {
+          const newPerson = { name: newName, number: newNumber }
+          personsService.create(newPerson)
+            .then(newPerson => setPersons(persons.concat(newPerson)))
+          updateSuccessMsg(`added ${newPerson.name}`)
+        } else {
+          const updated = {
+            ...existing,
+            number: newNumber,
+          }
+          console.log("updating", existing, "to", updated)
+          personsService.update(updated)
+            .then(res => {
+              const updated = res.data
+              const newPersons = persons.filter(p => p.id !== updated.id)
+              setPersons([...newPersons, updated])
+            })
+        }
+      })
   }
 
   const deleteHandler = (targetPerson) => {
