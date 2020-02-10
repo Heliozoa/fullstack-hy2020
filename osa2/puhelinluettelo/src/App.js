@@ -47,8 +47,16 @@ const App = () => {
         if (!existing) {
           const newPerson = { name: newName, number: newNumber }
           personsService.create(newPerson)
-            .then(newPerson => setPersons(persons.concat(newPerson)))
-          updateSuccessMsg(`added ${newPerson.name}`)
+            .then(newPerson => {
+
+              updateSuccessMsg(`added ${newPerson.name}`)
+              setPersons(persons.concat(newPerson))
+            })
+            .catch(e => {
+              const msg = e.response.data.error
+              console.error(msg)
+              updateErrorMsg(msg)
+            })
         } else {
           const updated = {
             ...existing,
