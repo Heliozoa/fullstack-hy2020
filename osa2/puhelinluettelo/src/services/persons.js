@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const rootUrl = 'http://localhost:3001/api/persons'
+const rootUrl = '/api/persons'
 const idUrl = id => `${rootUrl}/${id}`
 
 const getAll = () => {
