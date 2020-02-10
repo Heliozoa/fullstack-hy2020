@@ -41,27 +41,10 @@ const App = () => {
 
   const submitPerson = (event) => {
     event.preventDefault()
-    const search = persons.filter(p => p.name === newName)
-    console.log(search)
-    if (search.length > 0) {
-      const updated = { ...search[0], number: newNumber }
-      personsService.update(updated)
-        .then(_ => {
-          const updatedPersons = persons.map(p => p.id === updated.id ? updated : p)
-          setPersons(updatedPersons)
-          updateSuccessMsg(`updated ${updated.name}`)
-        })
-        .catch(err => {
-          const updatedPersons = persons.filter(p => p.id !== updated.id)
-          setPersons(updatedPersons)
-          updateErrorMsg(`Information of ${updated.name} has already been removed from server`)
-        })
-    } else {
-      const newPerson = { name: newName, number: newNumber }
-      personsService.create(newPerson)
-        .then(newPerson => setPersons(persons.concat(newPerson)))
-      updateSuccessMsg(`added ${newPerson.name}`)
-    }
+    const newPerson = { name: newName, number: newNumber }
+    personsService.create(newPerson)
+      .then(newPerson => setPersons(persons.concat(newPerson)))
+    updateSuccessMsg(`added ${newPerson.name}`)
   }
 
   const deleteHandler = (targetPerson) => {
