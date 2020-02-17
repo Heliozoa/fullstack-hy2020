@@ -42,6 +42,29 @@ const mostBlogs = blogs => {
     }, undefined)
 }
 
+const mostLikes = blogs => {
+    if (blogs.length === 0) {
+        return undefined
+    }
+
+    authors = {}
+    blogs.map(blog => {
+        if (authors[blog.author] === undefined) {
+            authors[blog.author] = {
+                author: blog.author,
+                likes: 0,
+            }
+        }
+        authors[blog.author].likes += blog.likes
+    })
+    return Object.values(authors).reduce((author, nextAuthor) => {
+        if (author === undefined) {
+            return nextAuthor
+        }
+        return author.likes > nextAuthor.likes ? author : nextAuthor
+    }, undefined)
+}
+
 module.exports = {
-    dummy, totalLikes, favoriteBlog, mostBlogs
+    dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
 }
