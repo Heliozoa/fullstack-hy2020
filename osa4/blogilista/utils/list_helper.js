@@ -38,7 +38,7 @@ const mostBlogs = blogs => {
         if (author === undefined) {
             return nextAuthor
         }
-        return author[1] > nextAuthor[1] ? author : nextAuthor
+        return author.blogs > nextAuthor.blogs ? author : nextAuthor
     }, undefined)
 }
 
