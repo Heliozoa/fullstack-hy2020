@@ -1,5 +1,7 @@
 const listHelper = require('../utils/list_helper')
 
+const emptyBlogs = []
+
 const nonemptyBlogs = [
     { _id: "5a422a851b54a676234d17f7", title: "React patterns", author: "Michael Chan", url: "https://reactpatterns.com/", likes: 7, __v: 0 },
     { _id: "5a422aa71b54a676234d17f8", title: "Go To Statement Considered Harmful", author: "Edsger W. Dijkstra", url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html", likes: 5, __v: 0 },
@@ -9,21 +11,60 @@ const nonemptyBlogs = [
     { _id: "5a422bc61b54a676234d17fc", title: "Type wars", author: "Robert C. Martin", url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html", likes: 2, __v: 0 }
 ]
 
-test('dummy returns one', () => {
-    const blogs = []
-
-    const result = listHelper.dummy(blogs)
-    expect(result).toBe(1)
+describe('dummy', () => {
+    test('dummy returns one', () => {
+        const result = listHelper.dummy(emptyBlogs)
+        expect(result).toBe(1)
+    })
 })
 
-test('total likes for empty list', () => {
-    const result = listHelper.totalLikes([])
+describe('totalLikes', () => {
+    test('total likes for empty list', () => {
+        const result = listHelper.totalLikes(emptyBlogs)
 
-    expect(result).toBe(0)
+        expect(result).toBe(0)
+    })
+
+    test('total likes for nonempty list', () => {
+        const result = listHelper.totalLikes(nonemptyBlogs)
+
+        expect(result).toBe(36)
+    })
 })
 
-test('total likes for nonempty list', () => {
-    const result = listHelper.totalLikes(nonemptyBlogs)
+describe('favoriteBlog', () => {
+    test('favorite blog for empty list', () => {
+        const result = listHelper.favoriteBlog(emptyBlogs)
 
-    expect(result).toBe(36)
+        expect(result).toBe(undefined)
+    })
+
+    test('favorite blog for nonempty list', () => {
+        const result = listHelper.favoriteBlog(nonemptyBlogs)
+        const expected = {
+            title: nonemptyBlogs[2].title,
+            author: nonemptyBlogs[2].author,
+            likes: nonemptyBlogs[2].likes,
+        }
+
+        expect(result).toEqual(expected)
+    })
+})
+
+describe('mostBlogs', () => {
+    test('most blogs for empty list', () => {
+        const result = listHelper.mostBlogs(emptyBlogs)
+
+        expect(result).toBe(undefined)
+    })
+
+    test('most blogs for nonempty list', () => {
+        const result = listHelper.mostBlogs(nonemptyBlogs)
+        const expected = {
+            author: "Robert C. Martin",
+            blogs: 3,
+        }
+
+        expect(result).toEqual(expected)
+    })
 })
