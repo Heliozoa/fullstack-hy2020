@@ -38,6 +38,46 @@ test('database[_id] translated to object[id]', async () => {
     }
 })
 
+test('can add blog with post', async () => {
+    const newBlog = new Blog({
+        id: "1",
+        title: "2",
+        author: "3",
+        url: "3",
+        likes: 4
+    })
+
+    const added = await api
+        .post('/api/blogs')
+        .send(newBlog)
+
+
+    const response = await api
+        .get('/api/blogs')
+
+
+    expect(response.body.find(b => b.id === added.body.id)).toBeDefined()
+    expect(response.body.length).toBe(7)
+})
+
+
+test('post with no likes defaults to 0', async () => {
+    const newBlog = new Blog({
+        id: "1",
+        title: "2",
+        author: "3",
+        url: "3",
+    })
+
+    const added = await api
+        .post('/api/blogs')
+        .send(newBlog)
+
+    console.log(added.body)
+
+    expect(added.body.likes).toBe(0)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
