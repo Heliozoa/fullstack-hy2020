@@ -108,6 +108,38 @@ test('post with no url leads to 400', async () => {
     expect(response.status).toBe(400)
 })
 
+
+test('deletion works', async () => {
+    const id = "5a422a851b54a676234d17f7"
+    const response = await api
+        .delete(`/api/blogs/${id}`)
+
+    expect(response.status).toBe(200)
+
+    const blogs = await api
+        .get('/api/blogs')
+    expect(blogs.body.length).toBe(5)
+})
+
+test('update works', async () => {
+    const id = "5a422a851b54a676234d17f7"
+    const response = await api
+        .put(`/api/blogs/${id}`)
+        .send(
+            { id, title: "1", author: "2", url: "3", likes: 4 }
+        )
+
+    expect(response.status).toBe(200)
+
+    const blogs = await api
+        .get('/api/blogs')
+    const updated = blogs.body.find(b => b.id === id)
+    expect(updated.title).toBe("1")
+    expect(updated.author).toBe("2")
+    expect(updated.url).toBe("3")
+    expect(updated.likes).toBe(4)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
