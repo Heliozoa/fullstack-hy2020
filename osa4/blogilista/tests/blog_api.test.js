@@ -83,8 +83,8 @@ beforeEach(async () => {
     await Blog.deleteMany({})
     await User.deleteMany({})
 
-    let blogPromises = initialBlogs.map(b => new Blog(b).save())
     let userPromises = users.map(u => new User(u).save())
+    let blogPromises = initialBlogs.map(b => new Blog(b).save())
     await Promise.all(blogPromises.concat(userPromises))
 })
 
@@ -110,7 +110,8 @@ test('can add blog with post', async () => {
         title: "2",
         author: "3",
         url: "3",
-        likes: 4
+        likes: 4,
+        user: "5e4c52fd9d22702fc5612f1a",
     })
 
     const added = await api
@@ -133,6 +134,7 @@ test('post with no likes defaults to 0', async () => {
         title: "2",
         author: "3",
         url: "3",
+        user: "5e4c52fd9d22702fc5612f1a",
     })
 
     const added = await api
@@ -148,6 +150,7 @@ test('post with no title leads to 400', async () => {
         id: "1",
         author: "3",
         url: "3",
+        user: "5e4c52fd9d22702fc5612f1a",
     })
 
     const response = await api
@@ -163,6 +166,7 @@ test('post with no url leads to 400', async () => {
         id: "1",
         title: "2",
         author: "3",
+        user: "5e4c52fd9d22702fc5612f1a",
     })
 
     const response = await api
