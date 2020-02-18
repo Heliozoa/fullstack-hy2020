@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
 const schema = mongoose.Schema({
-    id: String,
     username: {
         type: String,
         required: true,
@@ -14,10 +13,19 @@ const schema = mongoose.Schema({
         required: true,
         minlength: 3,
     },
+    blogs: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Blog',
+        },
+    ],
 })
 
 schema.set('toJSON', {
     transform: (document, returnedObject) => {
+        for (blog of returnedObject.blogs) {
+            delete blog.user
+        }
         returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id
         delete returnedObject.__v
@@ -26,6 +34,6 @@ schema.set('toJSON', {
 })
 
 schema.plugin(uniqueValidator)
-const User = mongoose.model('user', schema)
+const User = mongoose.model('User', schema)
 
 module.exports = User
