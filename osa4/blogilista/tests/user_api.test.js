@@ -6,8 +6,8 @@ const User = require('../models/user')
 
 
 const users = [
-    { _id: "5a422a851b54a676234d17f7", username: "m", name: "Matti", password: "123", __v: 0 },
-    { _id: "5a422aa71b54a676234d17f8", username: "a", name: "Arto", password: "321", __v: 0 },
+    { _id: "5a422a851b54a676234d17f7", username: "mat", name: "Matti", password: "123", __v: 0 },
+    { _id: "5a422aa71b54a676234d17f8", username: "art", name: "Arto", password: "321", __v: 0 },
 ]
 
 beforeEach(async () => {
@@ -25,7 +25,7 @@ test('right amount of users returned with get', async () => {
 
 test('can add user with post', async () => {
     const user = {
-        username: "d",
+        username: "dan",
         name: "Daniel",
         password: "999",
     }
@@ -37,6 +37,23 @@ test('can add user with post', async () => {
         .get('/api/users')
 
     expect(response.body.length).toBe(3)
+})
+
+test('short username rejected with 400', async () => {
+    const user = {
+        username: "d",
+        name: "Daniel",
+        password: "999",
+    }
+    const response = await api
+        .post('/api/users')
+        .send(user)
+    expect(response.status).toBe(400)
+
+    const users = await api
+        .get('/api/users')
+
+    expect(users.body.length).toBe(2)
 })
 
 afterAll(() => {
