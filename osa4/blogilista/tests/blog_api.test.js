@@ -78,6 +78,36 @@ test('post with no likes defaults to 0', async () => {
     expect(added.body.likes).toBe(0)
 })
 
+
+test('post with no title leads to 400', async () => {
+    const newBlog = new Blog({
+        id: "1",
+        author: "3",
+        url: "3",
+    })
+
+    const response = await api
+        .post('/api/blogs')
+        .send(newBlog)
+
+    expect(response.status).toBe(400)
+})
+
+
+test('post with no url leads to 400', async () => {
+    const newBlog = new Blog({
+        id: "1",
+        title: "2",
+        author: "3",
+    })
+
+    const response = await api
+        .post('/api/blogs')
+        .send(newBlog)
+
+    expect(response.status).toBe(400)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
