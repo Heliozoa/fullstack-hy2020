@@ -28,6 +28,16 @@ test('right amount of blogs returned', async () => {
     expect(response.body.length).toBe(6)
 })
 
+test('database[_id] translated to object[id]', async () => {
+    const response = await api
+        .get('/api/blogs')
+
+    for (blog of response.body) {
+        console.log(blog)
+        expect(initialBlogs.find(b => blog.id === b._id)).toBeDefined()
+    }
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
