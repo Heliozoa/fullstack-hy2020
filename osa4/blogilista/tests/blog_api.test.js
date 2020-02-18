@@ -133,6 +133,7 @@ test('update works', async () => {
 
     const blogs = await api
         .get('/api/blogs')
+    expect(blogs.body.length).toBe(6)
     const updated = blogs.body.find(b => b.id === id)
     expect(updated.title).toBe("1")
     expect(updated.author).toBe("2")
