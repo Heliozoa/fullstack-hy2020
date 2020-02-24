@@ -30,4 +30,16 @@ const update = async (blog) => {
   }
 }
 
-export default { getAll, newBlog, update }
+const remove = async (user, id) => {
+  try {
+    const config = {
+      headers: { Authorization: `bearer ${user.token}` }
+    }
+    const url = `${baseUrl}/${id}`
+    return await axios.delete(url, config)
+  } catch (err) {
+    console.error(err.response.data.error)
+  }
+}
+
+export default { getAll, newBlog, update, remove }

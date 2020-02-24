@@ -3,7 +3,6 @@ import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
 const BlogForm = ({ blogs, setBlogs, user }) => {
-  console.log('u', user)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')

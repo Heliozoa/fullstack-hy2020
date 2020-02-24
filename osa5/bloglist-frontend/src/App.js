@@ -44,7 +44,7 @@ const App = () => {
       <div>{user.username} logged in <button onClick={logout}>logout</button></div>
       <br />
       <BlogForm blogs={blogs} setBlogs={setBlogs} user={user} />
-      <BlogList blogs={blogs} />
+      <BlogList user={user} blogs={blogs} setBlogs={setBlogs} />
     </>
   }
 }
