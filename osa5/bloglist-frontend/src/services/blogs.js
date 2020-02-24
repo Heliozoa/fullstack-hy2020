@@ -7,14 +7,10 @@ const getAll = () => {
 }
 
 const newBlog = async (user, title, author, url) => {
-  try {
-    const config = {
-      headers: { Authorization: `bearer ${user.token}` }
-    }
-    return await axios.post(baseUrl, { title, author, url }, config)
-  } catch (err) {
-    console.error(err.response.data.error)
+  const config = {
+    headers: { Authorization: `bearer ${user.token}` }
   }
+  return await axios.post(baseUrl, { title, author, url }, config)
 }
 
 const update = async (blog) => {

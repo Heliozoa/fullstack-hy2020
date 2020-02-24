@@ -11,12 +11,20 @@ const BlogForm = ({ user, createBlog }) => {
     setVisible(!visible)
   }
 
+  const create = (event) => {
+    event.preventDefault()
+    createBlog(user, title, author, url)
+    toggle()
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
 
   if (visible) {
     return <div>
       <h2>create new</h2>
-      <form onSubmit={event => {
-        event.preventDefault(); createBlog(user, title, author, url); toggle() }}>
+      <form onSubmit={create}>
         <div>title: <input id="title" onChange={event => setTitle(event.target.value)} /></div>
         <div>author: <input id="author" onChange={event => setAuthor(event.target.value)} /></div>
         <div>url: <input id="url" onChange={event => setUrl(event.target.value)} /></div>
@@ -25,7 +33,7 @@ const BlogForm = ({ user, createBlog }) => {
       <div><button onClick={toggle}>cancel</button></div>
     </div>
   } else {
-    return <div><button id="show" onClick={toggle}>new note</button></div>
+    return <div><button id="show" onClick={toggle}>new blog</button></div>
   }
 }
 
