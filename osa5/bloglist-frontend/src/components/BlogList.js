@@ -5,9 +5,11 @@ import PropTypes from 'prop-types'
 const BlogList = ({ blogs }) => {
   return <div>
     <br />
-    {blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} />
-    )}
+    {blogs
+      .sort((b1, b2) => b1.likes < b2.likes)
+      .map(blog =>
+        <Blog key={blog.id} blog={blog} />
+      )}
   </div>
 }
 

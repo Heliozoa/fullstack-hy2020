@@ -3,7 +3,7 @@ import blogService from '../services/blogs'
 
 const Blog = ({ blog }) => {
   const [detailedView, setDetailedView] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
+  const [likes, setLikes] = useState(blog.likes ? blog.likes : 0)
 
   const toggle = () => {
     setDetailedView(!detailedView)
