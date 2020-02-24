@@ -17,4 +17,17 @@ const newBlog = async (user, title, author, url) => {
   }
 }
 
-export default { getAll, newBlog }
+const update = async (blog) => {
+  try {
+    const url = `${baseUrl}/${blog.id}`
+    const updated = {
+      ...blog,
+      user: blog.user.id,
+    }
+    return await axios.put(url, updated)
+  } catch (err) {
+    console.error(err.response.data.error)
+  }
+}
+
+export default { getAll, newBlog, update }

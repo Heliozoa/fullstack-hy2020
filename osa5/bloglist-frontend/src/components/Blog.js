@@ -1,13 +1,22 @@
 import React, { useState } from 'react'
+import blogService from '../services/blogs'
 
 const Blog = ({ blog }) => {
   const [detailedView, setDetailedView] = useState(false)
+  const [likes, setLikes] = useState(blog.likes)
 
   const toggle = () => {
     setDetailedView(!detailedView)
   }
 
-  const like = () => {}
+  const like = (blog) => {
+    const updated = {
+      ...blog,
+      likes: likes + 1,
+    }
+    setLikes(likes + 1)
+    blogService.update(updated)
+  }
 
   if (detailedView) {
     return <div className='blog'>
@@ -17,8 +26,8 @@ const Blog = ({ blog }) => {
       </div>
       <div>{blog.url}</div>
       <div>
-        likes {blog.likes}
-        <button onClick={like}>like</button>
+        likes {likes}
+        <button onClick={() => like(blog)}>like</button>
       </div>
       <div>{blog.user.name}</div>
       <hr/>
