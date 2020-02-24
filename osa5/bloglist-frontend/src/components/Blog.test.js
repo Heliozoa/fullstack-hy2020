@@ -61,7 +61,7 @@ test('renders all content on detail click', () => {
   )
 })
 
-test('renders all content on detail click', () => {
+test('like calls function', () => {
   const blog = {
     title: 'tttt',
     author: 'aaaa',

@@ -43,7 +43,7 @@ const App = () => {
       <h2>blogs</h2>
       <div>{user.username} logged in <button onClick={logout}>logout</button></div>
       <br />
-      <BlogForm blogs={blogs} setBlogs={setBlogs} user={user} />
+      <BlogForm blogs={blogs} setBlogs={setBlogs} user={user} mock={() => 0} />
       <BlogList user={user} blogs={blogs} setBlogs={setBlogs} />
     </>
   }
