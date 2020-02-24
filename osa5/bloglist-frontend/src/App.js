@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import BlogList from './components/BlogList'
 import Login from './components/Login'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -33,20 +34,17 @@ const App = () => {
   const logout = () => {
     window.localStorage.removeItem('user')
     setUser(null)
-
   }
 
   if (user === null) {
     return <Login login={login} setUsername={setUsername} setPassword={setPassword} />
   } else {
     return <>
-      <button onClick={logout}>logout</button>
-      <div>
-        <h2>blogs</h2>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
-      </div>
+      <h2>blogs</h2>
+      <div>{user.username} logged in <button onClick={logout}>logout</button></div>
+      <br />
+      <BlogForm blogs={blogs} setBlogs={setBlogs} user={user} />
+      <BlogList blogs={blogs} />
     </>
   }
 }
