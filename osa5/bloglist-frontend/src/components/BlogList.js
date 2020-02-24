@@ -17,7 +17,7 @@ const BlogList = ({ user, blogs, setBlogs }) => {
     {blogs
       .sort((b1, b2) => b1.likes < b2.likes)
       .map(blog =>
-        <Blog user={user} key={blog.id} blog={blog} handleRemove={remove}  />
+        <Blog user={user} key={blog.id} blog={blog} handleRemove={remove} mock={() => 0} />
       )}
   </div>
 }

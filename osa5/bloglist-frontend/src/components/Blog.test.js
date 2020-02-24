@@ -60,3 +60,29 @@ test('renders all content on detail click', () => {
     '1111'
   )
 })
+
+test('renders all content on detail click', () => {
+  const blog = {
+    title: 'tttt',
+    author: 'aaaa',
+    url: 'uuuu',
+    likes: 1111,
+    user: {
+      name: 'nnnn',
+    }
+  }
+
+  const mockHandler = jest.fn()
+
+  const component = render(
+    <Blog blog={blog} mock={mockHandler} />
+  )
+
+  const view = component.getByText('view')
+  fireEvent.click(view)
+
+  const button = component.getByText('like')
+  fireEvent.click(button)
+  fireEvent.click(button)
+  expect(mockHandler.mock.calls.length).toBe(2)
+})
