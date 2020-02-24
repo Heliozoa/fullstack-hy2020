@@ -16,25 +16,39 @@ const App = () => {
     )
   }, [])
 
+  useEffect(() => {
+    const user = JSON.parse(window.localStorage.getItem('user'))
+    if (user) {
+      setUser(user)
+    }
+  }, [])
+
   const login = () => {
     loginService.login(username, password).then(user => {
-      console.log(user)
+      window.localStorage.setItem('user', JSON.stringify(user))
       setUser(user)
     })
   }
 
-  if (user === null) {
-    return <Login login={login} setUsername={setUsername} setPassword={setPassword} />
+  const logout = () => {
+    window.localStorage.removeItem('user')
+    setUser(null)
+
   }
 
-  return (
-    <div>
-      <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
-    </div>
-  )
+  if (user === null) {
+    return <Login login={login} setUsername={setUsername} setPassword={setPassword} />
+  } else {
+    return <>
+      <button onClick={logout}>logout</button>
+      <div>
+        <h2>blogs</h2>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
+        )}
+      </div>
+    </>
+  }
 }
 
 export default App
