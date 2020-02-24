@@ -11,7 +11,6 @@ const newBlog = async (user, title, author, url) => {
     const config = {
       headers: { Authorization: `bearer ${user.token}` }
     }
-    console.log(user.token)
     return await axios.post(baseUrl, { title, author, url }, config)
   } catch (err) {
     console.error(err.response.data.error)
