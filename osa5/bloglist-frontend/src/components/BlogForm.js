@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const BlogForm = ({ blogs, setBlogs, user, mock }) => {
+const BlogForm = ({ user, createBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -12,19 +11,12 @@ const BlogForm = ({ blogs, setBlogs, user, mock }) => {
     setVisible(!visible)
   }
 
-  const createBlog = () => {
-    mock(user, title, author, url)
-    blogService.newBlog(user, title, author, url).then(response => {
-      setBlogs(blogs.concat(response.data))
-    })
-    toggle()
-  }
-
 
   if (visible) {
     return <div>
       <h2>create new</h2>
-      <form onSubmit={event => { event.preventDefault(); createBlog() }}>
+      <form onSubmit={event => {
+        event.preventDefault(); createBlog(user, title, author, url); toggle() }}>
         <div>title: <input id="title" onChange={event => setTitle(event.target.value)} /></div>
         <div>author: <input id="author" onChange={event => setAuthor(event.target.value)} /></div>
         <div>url: <input id="url" onChange={event => setUrl(event.target.value)} /></div>
@@ -38,9 +30,8 @@ const BlogForm = ({ blogs, setBlogs, user, mock }) => {
 }
 
 BlogForm.propTypes = {
-  blogs: PropTypes.array.isRequired,
-  setBlogs: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
+  createBlog: PropTypes.func.isRequired,
 }
 
 export default BlogForm

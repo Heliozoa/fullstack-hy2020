@@ -5,17 +5,6 @@ import { render, fireEvent } from '@testing-library/react'
 import BlogForm from './BlogForm'
 
 test('creating new blog calls function', () => {
-  const blog = {
-    title: 'tttt',
-    author: 'aaaa',
-    url: 'uuuu',
-    likes: 1111,
-    user: {
-      name: 'nnnn',
-      username: 'ssss',
-      id: 2222,
-    }
-  }
 
   const mockHandler = jest.fn()
 
@@ -26,7 +15,7 @@ test('creating new blog calls function', () => {
   }
 
   const component = render(
-    <BlogForm blogs={[]} setBlogs={() => 0} mock={mockHandler} user={user} />
+    <BlogForm blogs={[]} setBlogs={() => 0} createBlog={mockHandler} user={user} />
   )
 
   const show = component.container.querySelector('#show')

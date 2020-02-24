@@ -36,6 +36,12 @@ const App = () => {
     setUser(null)
   }
 
+  const createBlog = (user, title, author, url) => {
+    blogService.newBlog(user, title, author, url).then(response => {
+      setBlogs(blogs.concat(response.data))
+    })
+  }
+
   if (user === null) {
     return <Login login={login} setUsername={setUsername} setPassword={setPassword} />
   } else {
@@ -43,7 +49,7 @@ const App = () => {
       <h2>blogs</h2>
       <div>{user.username} logged in <button onClick={logout}>logout</button></div>
       <br />
-      <BlogForm blogs={blogs} setBlogs={setBlogs} user={user} mock={() => 0} />
+      <BlogForm blogs={blogs} user={user} createBlog={createBlog} />
       <BlogList user={user} blogs={blogs} setBlogs={setBlogs} />
     </>
   }

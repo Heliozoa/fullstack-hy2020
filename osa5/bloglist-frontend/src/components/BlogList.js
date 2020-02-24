@@ -12,12 +12,21 @@ const BlogList = ({ user, blogs, setBlogs }) => {
     }
   }
 
+  const like = (blog, likes, setLikes) => {
+    const updated = {
+      ...blog,
+      likes: likes + 1,
+    }
+    setLikes(likes + 1)
+    blogService.update(updated)
+  }
+
   return <div>
     <br />
     {blogs
       .sort((b1, b2) => b1.likes < b2.likes)
       .map(blog =>
-        <Blog user={user} key={blog.id} blog={blog} handleRemove={remove} mock={() => 0} />
+        <Blog user={user} key={blog.id} blog={blog} handleRemove={remove} like={like} />
       )}
   </div>
 }

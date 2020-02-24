@@ -75,7 +75,7 @@ test('like calls function', () => {
   const mockHandler = jest.fn()
 
   const component = render(
-    <Blog blog={blog} mock={mockHandler} />
+    <Blog blog={blog} like={mockHandler} />
   )
 
   const view = component.getByText('view')
