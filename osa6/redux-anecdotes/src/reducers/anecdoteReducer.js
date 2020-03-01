@@ -53,6 +53,7 @@ const reducer = (state = initialState, action) => {
     case 'CREATE':
       const text = action.data.anecdote
       const obj = asObject(text)
+      console.log('now', [...state, obj])
       return [...state, obj]
     default:
       return state
