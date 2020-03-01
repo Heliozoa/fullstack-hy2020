@@ -8,11 +8,11 @@ const Notification = () => {
     padding: 10,
     borderWidth: 1
   }
-  if (notification === null) {
+  if (notification.message === null) {
     return <></>
   } else {
     return <div style={style}>
-      {notification}
+      {notification.message}
     </div>
   }
 }
