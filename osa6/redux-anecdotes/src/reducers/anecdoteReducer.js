@@ -1,3 +1,5 @@
+import { createAnecdote, getAll } from '../services/anecdotes'
+
 export const vote = (id) => {
   console.log(id)
   return {
@@ -6,18 +8,23 @@ export const vote = (id) => {
   }
 }
 
-export const create = (anecdote) => {
-  console.log(anecdote)
-  return {
-    type: 'CREATE',
-    data: { anecdote }
+export const create = (contents) => {
+  return async dispatch => {
+    const anecdote = await createAnecdote(contents)
+    dispatch({
+      type: 'CREATE',
+      data: { anecdote }
+    })
   }
 }
 
-export const init = (anecdotes) => {
-  return {
-    type: 'INIT',
-    data: { anecdotes }
+export const init = () => {
+  return async dispatch => {
+    const anecdotes = await getAll()
+    dispatch({
+      type: 'INIT',
+      data: { anecdotes }
+    })
   }
 }
 
@@ -37,8 +44,8 @@ const reducer = (state = [], action) => {
       newState.sort((a1, a2) => a2.votes - a1.votes)
       return newState
     case 'CREATE':
-      const text = action.data.anecdote
-      return state
+      const newAnecdote = action.data.anecdote
+      return [...state, newAnecdote]
     case 'INIT':
       const anecdotes = action.data.anecdotes
       return anecdotes
