@@ -1,27 +1,15 @@
-export const setVote = (anecdote) => {
-    return {
-        type: 'SET VOTE',
-        data: { anecdote }
-    }
-}
-
-export const setCreate = (anecdote) => {
-    return {
-        type: 'SET CREATE',
-        data: { anecdote }
-    }
-}
-
-export const unset = () => {
-    return {
-        type: 'UNSET'
-    }
-}
-
-export const setTimer = (timer) => {
-    return {
-        type: 'SET TIMER',
-        data: { timer },
+export const setNotification = (message, time) => {
+    return async dispatch => {
+        const timer = setTimeout(() => {
+            dispatch({
+                type: 'CLEAR NOTIFICATION',
+                data: { timer }
+            })
+        }, time * 1000)
+        dispatch({
+            type: 'SET NOTIFICATION',
+            data: { message, timer }
+        })
     }
 }
 
@@ -32,29 +20,24 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'SET VOTE': {
-            const anecdote = action.data.anecdote
+        case 'SET NOTIFICATION': {
+            const { message, timer } = action.data
             return {
                 ...state,
-                message: `voted '${anecdote}'`
-            }
-        }
-        case 'SET CREATE': {
-            const anecdote = action.data.anecdote
-            return {
-                ...state,
-                message: `created '${anecdote}'`,
-            }
-        }
-        case 'SET TIMER': {
-            const timer = action.data.timer
-            return {
-                ...state,
+                message,
                 timer
             }
         }
-        case 'UNSET':
-            return initialState
+        case 'CLEAR NOTIFICATION': {
+            const timer = action.data.timer
+            if (timer !== state.timer) {
+                return state
+            }
+            return {
+                ...state,
+                message: null
+            }
+        }
         default:
             return state
     }
