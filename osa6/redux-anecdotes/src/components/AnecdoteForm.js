@@ -1,9 +1,9 @@
 import React from 'react'
 import { create } from '../reducers/anecdoteReducer'
 import { setNotification } from '../reducers/notificationReducer'
-import { useSelector, useDispatch } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 
-const AnecdoteForm = () => {
+const AnecdoteForm = (props) => {
     const dispatch = useDispatch()
 
     const addAnecdote = (event) => {
@@ -20,4 +20,9 @@ const AnecdoteForm = () => {
     </form>
 }
 
-export default AnecdoteForm
+const mapStateToProps = (state) => {
+    return {}
+}
+
+const ConnectedAnecdoteForm = connect(mapStateToProps)(AnecdoteForm)
+export default ConnectedAnecdoteForm
