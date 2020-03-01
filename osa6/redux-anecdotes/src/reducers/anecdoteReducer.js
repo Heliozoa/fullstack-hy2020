@@ -27,6 +27,14 @@ export const vote = (id) => {
   }
 }
 
+export const create = (anecdote) => {
+  console.log(anecdote)
+  return {
+    type: 'CREATE',
+    data: { anecdote }
+  }
+}
+
 const reducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
@@ -40,6 +48,10 @@ const reducer = (state = initialState, action) => {
         votes: anecdote.votes + 1,
       }
       return state.map(a => a.id === id ? changed : a)
+    case 'CREATE':
+      const text = action.data.anecdote
+      const obj = asObject(text)
+      return [...state, obj]
     default:
       return state
   }
