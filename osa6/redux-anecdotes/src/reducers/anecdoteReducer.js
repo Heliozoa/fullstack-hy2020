@@ -47,7 +47,9 @@ const reducer = (state = initialState, action) => {
         ...anecdote,
         votes: anecdote.votes + 1,
       }
-      return state.map(a => a.id === id ? changed : a)
+      const newState = state.map(a => a.id === id ? changed : a)
+      newState.sort((a1, a2) => a2.votes - a1.votes)
+      return newState
     case 'CREATE':
       const text = action.data.anecdote
       const obj = asObject(text)
