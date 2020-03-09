@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {
   BrowserRouter as Router,
-  Switch, Route, Link, useParams,
+  Switch, Route, Link, useParams, useHistory
 } from "react-router-dom"
 
 const Menu = () => {
@@ -64,6 +64,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const history = useHistory()
 
 
   const handleSubmit = (e) => {
@@ -74,6 +75,13 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.setNotification(`a new anecdote ${content} created!`)
+    const newTimer = setTimeout(() => {
+      props.setNotification(null)
+    }, 10000)
+    clearTimeout(props.timer)
+    props.setTimer(newTimer)
+    history.push('/')
   }
 
   return (
@@ -99,6 +107,13 @@ const CreateNew = (props) => {
 
 }
 
+const Notification = ({ notification }) => {
+  if (notification === null) {
+    return <></>
+  }
+  return <div>{notification}</div>
+}
+
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -117,7 +132,8 @@ const App = () => {
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState(null)
+  const [timer, setTimer] = useState(null)
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
@@ -151,9 +167,10 @@ const App = () => {
             <About />
           </Route>
           <Route path="/create">
-            <CreateNew addNew={addNew} />
+            <CreateNew addNew={addNew} setNotification={setNotification} timer={timer} setTimer={setTimer} />
           </Route>
           <Route path="/">
+            <Notification notification={notification} />
             <AnecdoteList anecdotes={anecdotes} />
           </Route>
         </Switch>
