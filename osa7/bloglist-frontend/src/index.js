@@ -5,7 +5,9 @@ import { Provider } from 'react-redux'
 import { store } from './redux-helper'
 
 ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
+    <div class='container'>
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </div>,
     document.getElementById('root'))

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import userService from '../services/users'
 import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
 const UserList = () => {
     const [users, setUsers] = useState([])
@@ -14,10 +15,10 @@ const UserList = () => {
 
     return <>
         <h2>Users</h2>
-        <table>
+        <Table striped>
             <tbody>
                 <tr>
-                    <th></th>
+                    <th>name</th>
                     <th>blogs created</th>
                 </tr>
                 {users.map(u =>
@@ -31,7 +32,7 @@ const UserList = () => {
                     </tr>
                 )}
             </tbody>
-        </table>
+        </Table>
     </>
 }
 
