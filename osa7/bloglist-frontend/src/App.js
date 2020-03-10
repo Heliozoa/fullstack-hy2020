@@ -5,6 +5,8 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import { useSelector, useDispatch } from 'react-redux'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import UserList from './components/UserList'
 
 
 const App = () => {
@@ -90,14 +92,21 @@ const App = () => {
       <Login login={login} setUsername={setUsername} setPassword={setPassword} />
     </>
   } else {
-    return <>
+    return <Router>
       <h2>blogs</h2>
       <Notification />
       <div>{user.username} logged in <button onClick={logout}>logout</button></div>
       <br />
-      <BlogForm blogs={blogs} user={user} createBlog={createBlog} />
-      <BlogList user={user} blogs={blogs} />
-    </>
+      <Switch>
+        <Route path='/users'>
+          <UserList />
+        </Route>
+        <Route path='/'>
+          <BlogForm blogs={blogs} user={user} createBlog={createBlog} />
+          <BlogList user={user} blogs={blogs} />
+        </Route>
+      </Switch>
+    </Router>
   }
 }
 
