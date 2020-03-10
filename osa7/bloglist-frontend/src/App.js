@@ -9,18 +9,21 @@ import { useSelector, useDispatch } from 'react-redux'
 
 const App = () => {
   const dispatch = useDispatch()
-  const notification = useSelector(state => state)
+  const notification = useSelector(state => state.notification)
+  const blogs = useSelector(state => state.blogs)
 
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [notificationTimer, setNotificationTimer] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    blogService.getAll().then(blogs => {
+      dispatch({
+        type: 'INIT_BLOGS',
+        data: { blogs }
+      })
+    })
   }, [])
 
   useEffect(() => {
@@ -48,7 +51,10 @@ const App = () => {
 
   const createBlog = (user, title, author, url) => {
     blogService.newBlog(user, title, author, url).then(response => {
-      setBlogs(blogs.concat(response.data))
+      dispatch({
+        type: 'ADD_BLOG',
+        data: { blog: response.data }
+      })
       notify('blog created!')
     }).catch(err => {
       console.error('ERR', err)
@@ -90,7 +96,7 @@ const App = () => {
       <div>{user.username} logged in <button onClick={logout}>logout</button></div>
       <br />
       <BlogForm blogs={blogs} user={user} createBlog={createBlog} />
-      <BlogList user={user} blogs={blogs} setBlogs={setBlogs} />
+      <BlogList user={user} blogs={blogs} />
     </>
   }
 }

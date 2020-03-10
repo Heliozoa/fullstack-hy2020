@@ -1,4 +1,5 @@
-import { createStore } from 'redux'
+import { createStore, combineReducers } from 'redux'
+import BlogForm from './components/BlogForm'
 
 const notificationReducer = (state = null, action) => {
     switch (action.type) {
@@ -11,4 +12,16 @@ const notificationReducer = (state = null, action) => {
     }
 }
 
-export const store = createStore(notificationReducer)
+const blogsReducer = (state = [], action) => {
+    switch (action.type) {
+        case 'INIT_BLOGS':
+            return action.data.blogs
+        case 'ADD_BLOG':
+            return state.concat(action.data.blog)
+        default:
+            return state
+    }
+}
+
+const reducer = combineReducers({ notification: notificationReducer, blogs: blogsReducer })
+export const store = createStore(reducer)
