@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import userService from '../services/users'
-import { updateBlog } from '../redux-helper'
+import { Link } from 'react-router-dom'
 
 const UserList = () => {
     const [users, setUsers] = useState([])
@@ -23,7 +23,7 @@ const UserList = () => {
                 {users.map(u =>
                     <tr key={u.id}>
                         <td>
-                            {u.name}
+                            <Link to={`users/${u.id}`}>{u.name}</Link>
                         </td>
                         <td>
                             {u.blogs.length}

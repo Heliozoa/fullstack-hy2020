@@ -7,6 +7,7 @@ import BlogForm from './components/BlogForm'
 import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import UserList from './components/UserList'
+import User from './components/User'
 
 
 const App = () => {
@@ -98,6 +99,9 @@ const App = () => {
       <div>{user.username} logged in <button onClick={logout}>logout</button></div>
       <br />
       <Switch>
+        <Route path='/users/:id'>
+          <User />
+        </Route>
         <Route path='/users'>
           <UserList />
         </Route>
