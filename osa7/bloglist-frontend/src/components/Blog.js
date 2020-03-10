@@ -1,8 +1,25 @@
 import React, { useState } from 'react'
+import blogService from '../services/blogs'
+import { updateBlog, removeBlog } from '../redux-helper'
+import { useDispatch } from 'react-redux'
 
-const Blog = ({ blog, handleRemove, like }) => {
+const Blog = ({ blog, user }) => {
+  const dispatch = useDispatch()
   const [detailedView, setDetailedView] = useState(false)
-  const [likes, setLikes] = useState(blog.likes ? blog.likes : 0)
+
+  const like = () => {
+    const newBlog = {
+      ...blog,
+      likes: blog.likes + 1
+    }
+    blogService.update(newBlog)
+    dispatch(updateBlog(newBlog))
+  }
+
+  const remove = () => {
+    blogService.remove(user, blog.id)
+    dispatch(removeBlog(blog.id))
+  }
 
   const toggle = () => {
     setDetailedView(!detailedView)
@@ -16,12 +33,12 @@ const Blog = ({ blog, handleRemove, like }) => {
       </div>
       <div>{blog.url}</div>
       <div>
-        likes {likes}
-        <button onClick={() => like(blog, likes, setLikes)}>like</button>
+        likes {blog.likes}
+        <button onClick={like}>like</button>
       </div>
       <div>{blog.user.name}</div>
-      <div><button onClick={() => handleRemove(blog.id)}>delete</button></div>
-      <hr/>
+      <div><button onClick={remove}>delete</button></div>
+      <hr />
     </div>
   } else {
     return <div className='blog'>
