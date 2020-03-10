@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import UserList from './components/UserList'
 import User from './components/User'
+import BlogView from './components/BlogView'
 
 
 const App = () => {
@@ -104,6 +105,9 @@ const App = () => {
         </Route>
         <Route path='/users'>
           <UserList />
+        </Route>
+        <Route path='/blogs/:id'>
+          <BlogView />
         </Route>
         <Route path='/'>
           <BlogForm blogs={blogs} user={user} createBlog={createBlog} />
