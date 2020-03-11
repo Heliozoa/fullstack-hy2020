@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { AUTHORS, EDIT_AUTHOR } from '../queries'
 
@@ -46,6 +46,12 @@ const Authors = (props) => {
     const [editAuthor] = useMutation(EDIT_AUTHOR, {
       refetchQueries: [{ query: AUTHORS }]
     })
+
+    useEffect(() => {
+      if (authors[0]) {
+        setName(authors[0].name)
+      }
+    }, [authors])
 
     const submit = (e) => {
       e.preventDefault()
