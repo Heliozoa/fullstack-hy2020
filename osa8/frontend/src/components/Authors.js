@@ -39,6 +39,8 @@ const Authors = (props) => {
   }
 
   const AuthorEditor = () => {
+    const result = useQuery(AUTHORS)
+    const authors = result.loading ? [] : result.data.allAuthors
     const [name, setName] = useState('')
     const [born, setBorn] = useState('')
     const [editAuthor] = useMutation(EDIT_AUTHOR, {
@@ -63,7 +65,9 @@ const Authors = (props) => {
       <form onSubmit={submit}>
         <div>
           name
-          <input value={name} onChange={(e) => setName(e.target.value)} />
+          <select value={name} onChange={(e) => setName(e.target.value)}>
+            {authors.map(a => <option key={a.name} value={a.name}>{a.name}</option>)}
+          </select>
         </div>
         <div>
           born
