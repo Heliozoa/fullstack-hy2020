@@ -52,8 +52,7 @@ export const EDIT_AUTHOR = gql`
       )
       {
         name
-        setBornTo
+        born
       }
     }
-  )
 `

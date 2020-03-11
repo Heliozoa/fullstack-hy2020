@@ -41,12 +41,19 @@ const Authors = (props) => {
   const AuthorEditor = () => {
     const [name, setName] = useState('')
     const [born, setBorn] = useState('')
-    const [editAuthor] = EDIT_AUTHOR
+    const [editAuthor] = useMutation(EDIT_AUTHOR, {
+      refetchQueries: [{ query: AUTHORS }]
+    })
 
     const submit = (e) => {
       e.preventDefault()
 
-
+      editAuthor({
+        variables: {
+          name,
+          born: Number(born)
+        }
+      })
       setName('')
       setBorn('')
     }
