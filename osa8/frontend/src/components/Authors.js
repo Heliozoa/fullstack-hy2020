@@ -19,7 +19,6 @@ const Authors = (props) => {
     return null
   }
 
-
   const authors = result.loading ? [] : result.data.allAuthors
 
   return (
