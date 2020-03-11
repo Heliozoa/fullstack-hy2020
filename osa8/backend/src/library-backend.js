@@ -129,7 +129,6 @@ const resolvers = {
         authorCount: () => authors.length,
         allBooks: (root, args) => {
             const { author, genre } = args
-            console.log(author, genre)
             let res = books
             if (author) {
                 res = res.filter(b => b.author === author)
@@ -151,6 +150,7 @@ const resolvers = {
     },
     Mutation: {
         addBook: (root, args) => {
+            console.log('addBook', args)
             const author = args.author
             if (!authors.find(a => a.name === author)) {
                 authors = authors.concat({
