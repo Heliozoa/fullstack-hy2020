@@ -17,7 +17,6 @@ const Books = (props) => {
     return null
   }
 
-
   const genres = [...new Set(books.map(b => b.genres).flat())]
 
   return (
