@@ -9,6 +9,7 @@ export const BOOKS = gql`
         name
         born
       }
+      genres
     }
   }
 `
