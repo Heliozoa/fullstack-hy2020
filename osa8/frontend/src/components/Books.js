@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery } from '@apollo/client'
+import { useQuery, useApolloClient } from '@apollo/client'
 import { BOOKS } from '../queries'
 
 const Books = (props) => {
   const [books, setBooks] = useState([])
   const [genre, setGenre] = useState(null)
   const result = useQuery(BOOKS, { variables: { genre } })
+  const client = useApolloClient()
 
   useEffect(() => {
     if (!result.loading) {

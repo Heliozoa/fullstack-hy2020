@@ -1,5 +1,4 @@
-const uuid = require('uuid/v1')
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql, PubSub, UserInputError } = require('apollo-server')
 const mongoose = require('mongoose')
 require('dotenv').config()
 
@@ -14,8 +13,14 @@ mongoose.connect(mongodb_uri, { useNewUrlParser: true, useUnifiedTopology: true 
         console.error('error connecting to mongodb:', err)
     })
 
+const pubsub = new PubSub()
 
 const typeDefs = gql`
+  type Subscription {
+      bookAdded: Book!
+      authorAdded: Author!
+  }
+
   type Author {
       name: String!
       id: ID!
@@ -83,6 +88,7 @@ const resolvers = {
             return authors.map(a => {
                 const bookCount = books.filter(b => b.author.name === a.name).length
                 const newA = {
+                    id: a._id,
                     ...a.toObject(),
                     bookCount
                 }
@@ -112,6 +118,8 @@ const resolvers = {
                         invalidArgs: args,
                     })
                 }
+                pubsub.publish('AUTHOR_ADDED', { authorAdded: author })
+                console.log('author added', author)
             }
 
             const book = new Book({ ...args, author })
@@ -122,12 +130,22 @@ const resolvers = {
                     invalidArgs: args,
                 })
             }
+            pubsub.publish('BOOK_ADDED', { bookAdded: book })
+            console.log('book added', book)
             return book
         },
         editAuthor: async (root, args) => {
             console.log('editAuthor', args)
             const { name, setBornTo } = args
             return await Author.findOneAndUpdate({ name }, { born: setBornTo }, { new: true })
+        }
+    },
+    Subscription: {
+        bookAdded: {
+            subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+        },
+        authorAdded: {
+            subscribe: () => pubsub.asyncIterator(['AUTHOR_ADDED'])
         }
     }
 }
@@ -137,6 +155,7 @@ const server = new ApolloServer({
     resolvers,
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
     console.log(`Server ready at ${url}`)
+    console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })

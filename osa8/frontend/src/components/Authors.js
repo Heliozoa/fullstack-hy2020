@@ -11,6 +11,7 @@ const Authors = (props) => {
 
   const AuthorTable = () => {
     const result = useQuery(AUTHORS)
+    console.log('r', result)
     const authors = result.loading ? [] : result.data.allAuthors
 
     return <div>

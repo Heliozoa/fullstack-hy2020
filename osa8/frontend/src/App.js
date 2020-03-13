@@ -6,39 +6,66 @@ import NewBook from './components/NewBook'
 import {
   useSubscription, useApolloClient, gql
 } from '@apollo/client'
-import { BOOK_ADDED, BOOKS } from './queries'
+import { BOOK_ADDED, BOOKS, AUTHOR_ADDED, AUTHORS } from './queries'
 
 const App = () => {
-  const [page, setPage] = useState('authors')
+  const [page, setPage] = useState('books')
   const client = useApolloClient()
 
-  const updateCacheWith = (book) => {
-    const includedIn = (set, object) =>
-      set.map(p => p.id).includes(object.id)
+  const includedIn = (set, object) =>
+    set.map(p => p.id).includes(object.id)
 
-    let dataInStore = {}
-    try {
-      dataInStore = client.readQuery({ query: BOOKS })
-      console.log(dataInStore)
-    } catch (err) {
-      dataInStore = { allBooks: [] }
-      console.warn(err)
-    }
-
-    if (!includedIn(dataInStore.allBooks, book)) {
-      client.writeQuery({
-        query: BOOKS,
-        data: { allBooks: dataInStore.allBooks.concat(book) }
-      })
-      window.alert(`book ${book.title} added`)
-    }
+  const updateBookCache = (book) => {
+    book.genres.concat(null).forEach(genre => {
+      try {
+        const existingData = client.readQuery({ query: BOOKS, variables: { genre } })
+        if (!includedIn(existingData.allBooks, book)) {
+          client.writeQuery({
+            query: BOOKS,
+            variables: { genre },
+            data: { allBooks: existingData.allBooks.concat(book) }
+          })
+          window.alert(`book ${book.title} added`)
+          console.log('book added')
+        }
+      } catch (err) {
+      }
+    })
   }
 
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
       const book = subscriptionData.data.bookAdded
-      console.log(book)
-      updateCacheWith(book)
+      console.log('new book', book)
+      updateBookCache(book)
+    }
+  })
+
+  const updateAuthorCache = (author) => {
+    try {
+      const existingData = client.readQuery({ query: AUTHORS })
+      if (!includedIn(existingData.allAuthors, author)) {
+        const newAuthor = {
+          ...author,
+          bookCount: 1
+        }
+        client.writeQuery({
+          query: AUTHORS,
+          data: { allAuthors: existingData.allAuthors.concat(newAuthor) }
+        })
+        window.alert(`author ${author.name} added`)
+        console.log('author added')
+      }
+    } catch (err) {
+      console.warn('readquery', err)
+    }
+  }
+
+  useSubscription(AUTHOR_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const author = subscriptionData.data.authorAdded
+      console.log('new author', author)
+      updateAuthorCache(author)
     }
   })
 
