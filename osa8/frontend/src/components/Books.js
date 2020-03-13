@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery, useApolloClient } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { BOOKS } from '../queries'
 
 const Books = (props) => {
   const [books, setBooks] = useState([])
+  const [genres, setGenres] = useState([])
   const [genre, setGenre] = useState(null)
+  const allBooks = useQuery(BOOKS, { variables: { genre: null } })
   const result = useQuery(BOOKS, { variables: { genre } })
-  const client = useApolloClient()
 
   useEffect(() => {
     if (!result.loading) {
@@ -14,11 +15,15 @@ const Books = (props) => {
     }
   }, [result])
 
+  useEffect(() => {
+    if (!allBooks.loading) {
+      setGenres([...new Set(allBooks.data.allBooks.map(b => b.genres).flat())])
+    }
+  }, [allBooks])
+
   if (!props.show) {
     return null
   }
-
-  const genres = [...new Set(books.map(b => b.genres).flat())]
 
   return (
     <div>
