@@ -1,11 +1,11 @@
 interface ExerciseResult {
-    periodLength: number,
-    trainingDays: number,
-    success: boolean,
-    rating: number,
-    ratingDescription: string,
-    target: number,
-    average: number,
+    periodLength: number;
+    trainingDays: number;
+    success: boolean;
+    rating: number;
+    ratingDescription: string;
+    target: number;
+    average: number;
 }
 
 const calculateExercises = (hours: Array<number>, target: number): ExerciseResult => {
@@ -36,10 +36,10 @@ const calculateExercises = (hours: Array<number>, target: number): ExerciseResul
         target,
         average,
     };
-}
+};
 
-const target: number = Number(process.argv[2])
-const hours: Array<number> = process.argv.slice(3).map(a => Number(a));
+const target = Number(process.argv[2]);
+const hours = process.argv.slice(3).map(a => Number(a));
 
 if (target && hours.map(h => !isNaN(h)).reduce((acc, curr) => acc && curr)) {
     console.log(calculateExercises(hours, target));

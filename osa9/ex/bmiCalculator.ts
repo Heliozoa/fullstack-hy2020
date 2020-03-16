@@ -17,13 +17,13 @@ export const calculateBmi = (height: number, weight: number): string => {
     } else {
         return "Obese Class III (Very severely obese)";
     }
-}
+};
 
-const height: number = Number(process.argv[2])
-const weight: number = Number(process.argv[3])
+const height = Number(process.argv[2]);
+const weight = Number(process.argv[3]);
 
 if (height && weight) {
-    console.log(calculateBmi(height, weight))
+    console.log(calculateBmi(height, weight));
 } else {
     console.log("invalid parameters");
 }
