@@ -38,4 +38,11 @@ const calculateExercises = (hours: Array<number>, target: number): ExerciseResul
     };
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+const target: number = Number(process.argv[2])
+const hours: Array<number> = process.argv.slice(3).map(a => Number(a));
+
+if (target && hours.map(h => !isNaN(h)).reduce((acc, curr) => acc && curr)) {
+    console.log(calculateExercises(hours, target));
+} else {
+    console.log("invalid parameters");
+}
