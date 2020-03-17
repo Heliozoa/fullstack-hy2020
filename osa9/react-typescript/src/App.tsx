@@ -14,7 +14,7 @@ const Part: React.FC<{ course: CoursePart }> = ({ course }) => {
       return <p>{course.name} {course.description} {course.exerciseCount} {course.exerciseSubmissionLink}</p>
     default:
       const n: never = course;
-      throw new Error(`Unhandled discriminated union member`);
+      throw new Error(`Unhandled discriminated union member ${n}`);
   }
 }
 
