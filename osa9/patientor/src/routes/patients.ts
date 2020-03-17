@@ -11,11 +11,18 @@ router.get('/', (_, res) => {
 
 router.get('/:id', (req, res) => {
     const id = req.params.id;
+    if (id === undefined) {
+        res.json({ error: "missing id" });
+        return;
+    }
+
     const patient = patientsService.get(id);
     if (patient === undefined) {
         res.json({ error: "invalid id" });
         return;
     }
+
+    console.log('sent', patient);
     res.send(patient);
 });
 

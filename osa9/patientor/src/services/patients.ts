@@ -5,14 +5,13 @@ let patients = initialPatients;
 
 const getAll = (): Array<PatientNoSSN> => {
     return patients.map(p => {
-        delete p.ssn;
-        return p;
+        const { ssn, ...rest } = p;
+        return rest;
     });
 };
 
 const get = (id: string): Patient | undefined => {
     const patient = patients.find(p => p.id === id);
-    console.log(patient);
     return patient;
 }
 
