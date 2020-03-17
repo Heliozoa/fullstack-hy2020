@@ -1,10 +1,11 @@
+import Entry from './entry';
+
 export enum Gender {
     Male = "male",
     Female = "female",
     Other = "other",
 }
 
-export interface Entry { }
 
 interface Patient {
     id: string;
