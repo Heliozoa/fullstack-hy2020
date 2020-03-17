@@ -7,9 +7,17 @@ const router = express.Router();
 router.get('/', (_, res) => {
     const patients = patientsService.getAll();
     res.json(patients);
-})
+});
 
-
+router.get('/:id', (req, res) => {
+    const id = req.params.id;
+    const patient = patientsService.get(id);
+    if (patient === undefined) {
+        res.json({ error: "invalid id" });
+        return;
+    }
+    res.send(patient);
+});
 
 router.post('/', (req, res) => {
     const { name, ssn, dateOfBirth, occupation, gender } = req.body;
@@ -28,7 +36,8 @@ router.post('/', (req, res) => {
         ssn,
         dateOfBirth,
         occupation,
-        gender
+        gender,
+        entries: [],
     });
 
     res.send(newPatient);
