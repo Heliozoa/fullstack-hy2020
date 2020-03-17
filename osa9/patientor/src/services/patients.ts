@@ -1,5 +1,7 @@
-import patients from '../../data/patients';
-import { PatientNoSSN } from '../types/patient';
+import initialPatients from '../../data/patients';
+import Patient, { PatientNoSSN, NewPatient } from '../types/patient';
+
+let patients = initialPatients;
 
 const getAll = (): Array<PatientNoSSN> => {
     return patients.map(p => {
@@ -8,4 +10,13 @@ const getAll = (): Array<PatientNoSSN> => {
     });
 };
 
-export default { getAll };
+const add = (newPatient: NewPatient): Patient => {
+    const patient: Patient = {
+        id: String(patients.length),
+        ...newPatient,
+    };
+    patients = patients.concat(patient);
+    return patient;
+}
+
+export default { getAll, add };
