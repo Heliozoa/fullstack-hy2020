@@ -1,6 +1,6 @@
 import express from 'express';
 import patientsService from '../services/patients';
-import { validateString } from '../utils/utils';
+import { validateString, validateGender } from '../utils/utils';
 
 const router = express.Router();
 
@@ -19,7 +19,7 @@ router.post('/', (req, res) => {
         !validateString('ssn', ssn, res) ||
         !validateString('dateOfBirth', dateOfBirth, res) ||
         !validateString('occupation', occupation, res) ||
-        !validateString('gender', gender, res)) {
+        !validateGender(gender, res)) {
         return;
     };
 
