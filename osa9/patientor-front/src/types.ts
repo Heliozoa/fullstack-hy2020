@@ -25,10 +25,10 @@ export interface OccupationalHealthcareEntry extends BaseEntry {
 
 export interface HospitalEntry extends BaseEntry {
   discharge: {
-    date: string,
-    criteria: string,
+    date: string;
+    criteria: string;
   };
-  type: EntryType.Hospital
+  type: EntryType.Hospital;
 }
 
 export enum HealthRating {
@@ -47,13 +47,13 @@ export interface Diagnosis {
   code: string;
   name: string;
   latin?: string;
-};
+}
 
 export enum Gender {
   Male = "male",
   Female = "female",
   Other = "other"
-};
+}
 
 export interface Patient {
   id: string;
@@ -63,8 +63,8 @@ export interface Patient {
   ssn?: string;
   dateOfBirth?: string;
   entries: Entry[];
-};
+}
 
 export interface Error {
-  error: string,
-};
+  error: string;
+}

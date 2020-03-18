@@ -6,14 +6,14 @@ import { Diagnosis, EntryType } from "../types";
 export type EntryOption = {
     value: EntryType;
     label: string;
-}
+};
 
 type SelectFieldProps = {
     name: string;
     value: EntryType;
     label: string;
     options: EntryOption[];
-    onChange: (val: any) => any;
+    onChange: (val: any) => void;
 };
 
 export const SelectField: React.FC<SelectFieldProps> = ({

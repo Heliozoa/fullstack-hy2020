@@ -35,7 +35,7 @@ const entryTypeOptions: EntryOption[] = [
 export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
     const initialType = EntryType.HealthCheck;
     const [entryType, setEntryType] = useState<EntryType>(initialType);
-    const [{ diagnoses }] = useStateValue()
+    const [{ diagnoses }] = useStateValue();
 
     return (
         <Formik
@@ -64,6 +64,11 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
                 }
                 if (!values.description) {
                     errors.description = requiredError;
+                }
+                if (typeof values.healthCheckRating !== 'number' && values.type === EntryType.HealthCheck) {
+                    errors.healthCheckRating = "Rating must be a number";
+                } else if ((values.healthCheckRating > 3 || values.healthCheckRating < 0) && values.type === EntryType.HealthCheck) {
+                    errors.healthCheckRating = "Rating must be between 0 and 3";
                 }
                 if (!values.dischargeDate && values.type === EntryType.Hospital) {
                     errors.dischargeDate = requiredError;

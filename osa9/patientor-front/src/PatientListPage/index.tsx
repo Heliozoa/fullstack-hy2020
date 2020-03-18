@@ -38,11 +38,11 @@ const PatientListPage: React.FC = () => {
     }
   };
 
-  Object.values(patients).map(console.log);
+  Object.values(patients).map(p => console.log(p));
 
   const present = <T extends {}>(a: T | undefined): a is T => {
     return a !== undefined;
-  }
+  };
 
   return (
     <div className="App">

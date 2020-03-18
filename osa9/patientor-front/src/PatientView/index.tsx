@@ -5,7 +5,7 @@ import { apiBaseUrl } from "../constants";
 import { Segment, Icon, Button } from 'semantic-ui-react';
 import axios from "axios";
 import { useStateValue } from '../state';
-import { updatePatient, addEntry } from '../state/reducer';
+import { updatePatient } from '../state/reducer';
 import { isArray } from 'util';
 import { EntryFormValues } from '../AddEntryModal/AddEntryForm';
 import AddEntryModal from '../AddEntryModal';
@@ -68,7 +68,6 @@ const PatientView: React.FC<RouteComponentProps<{ id: string | undefined }>> = (
                 `${apiBaseUrl}/patients/${patient.id}/entries`,
                 postData
             );
-            console.log('added entry to', updatedPatient);
             dispatch(updatePatient(updatedPatient));
             closeModal();
         } catch (e) {
@@ -89,6 +88,7 @@ const PatientView: React.FC<RouteComponentProps<{ id: string | undefined }>> = (
                     setPatient(null);
                 }
             }).catch(err => {
+                console.error(err);
                 setPatient(null);
             });
         } else {
@@ -118,10 +118,10 @@ const PatientView: React.FC<RouteComponentProps<{ id: string | undefined }>> = (
             case Gender.Other:
                 return "other gender vertical";
             default:
-                const n: never = gender;
+                const _n: never = gender;
                 throw new Error('never gender');
-        };
-    }
+        }
+    };
 
     return <div>
         <h2>{patient.name} <Icon name={genderAbbr(patient.gender)} /></h2>
@@ -136,8 +136,8 @@ const PatientView: React.FC<RouteComponentProps<{ id: string | undefined }>> = (
             onClose={closeModal}
         />
         <Button onClick={() => openModal()}>Add New Entry</Button>
-    </div>
-}
+    </div>;
+};
 
 interface EntriesProps {
     entries: Entry[];
@@ -152,23 +152,24 @@ const Entries = ({ entries }: EntriesProps) => {
                 setDiagnoses(data.reduce<{ [code: string]: Diagnosis }>((map, diag) => {
                     map[diag.code] = diag;
                     return map;
-                }, {}))
+                }, {}));
             } else {
                 setDiagnoses(null);
             }
         }).catch(err => {
+            console.log(err);
             setDiagnoses(null);
         });
-    }, [])
+    }, []);
 
     return <>{entries.map(e => {
         return <Segment key={e.id}>
             <EntryDetails entry={e} diagnoses={diagnoses} />
-        </Segment>
-    })}</>
-}
+        </Segment>;
+    })}</>;
+};
 
-const EntryDetails: React.FC<{ entry: Entry, diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
+const EntryDetails: React.FC<{ entry: Entry; diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
     switch (entry.type) {
         case EntryType.Hospital:
             return <HospitalEntryView entry={entry} diagnoses={diagnoses} />;
@@ -177,12 +178,12 @@ const EntryDetails: React.FC<{ entry: Entry, diagnoses: DiagnosisMap }> = ({ ent
         case EntryType.HealthCheck:
             return <HealthCheckView entry={entry} diagnoses={diagnoses} />;
         default:
-            const n: never = entry;
+            const _n: never = entry;
             throw new Error('never type');
     }
-}
+};
 
-const HospitalEntryView: React.FC<{ entry: HospitalEntry, diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
+const HospitalEntryView: React.FC<{ entry: HospitalEntry; diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
     return <>
         <h3>{entry.date} <Icon name="hospital outline" /></h3>
         <div>{entry.description}</div>
@@ -190,17 +191,17 @@ const HospitalEntryView: React.FC<{ entry: HospitalEntry, diagnoses: DiagnosisMa
         <ul>
             <DiagnosisView entry={entry} diagnoses={diagnoses} />
         </ul>
-    </>
-}
+    </>;
+};
 
-const OccupationalHealthcareView: React.FC<{ entry: OccupationalHealthcareEntry, diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
-    const sickLeave = (leave: { startDate: string, endDate: string } | undefined) => {
+const OccupationalHealthcareView: React.FC<{ entry: OccupationalHealthcareEntry; diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
+    const sickLeave = (leave: { startDate: string; endDate: string } | undefined) => {
         if (leave) {
-            return <div>Sick leave: {leave.startDate} - {leave.endDate}</div>
+            return <div>Sick leave: {leave.startDate} - {leave.endDate}</div>;
         } else {
-            return <></>
+            return <></>;
         }
-    }
+    };
 
     return <>
         <h3>{entry.date} <Icon name="doctor" /> {entry.employerName}</h3>
@@ -209,10 +210,10 @@ const OccupationalHealthcareView: React.FC<{ entry: OccupationalHealthcareEntry,
         <ul>
             <DiagnosisView entry={entry} diagnoses={diagnoses} />
         </ul>
-    </>
-}
+    </>;
+};
 
-const HealthCheckView: React.FC<{ entry: HealthCheckEntry, diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
+const HealthCheckView: React.FC<{ entry: HealthCheckEntry; diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
     const healthRating = (rating: HealthRating): string => {
         switch (rating) {
             case HealthRating.Healthy:
@@ -224,10 +225,10 @@ const HealthCheckView: React.FC<{ entry: HealthCheckEntry, diagnoses: DiagnosisM
             case HealthRating.CriticalRisk:
                 return 'critical risk';
             default:
-                const n: never = rating;
+                const _n: never = rating;
                 throw new Error('never rating');
         }
-    }
+    };
 
     return <>
         <h3>{entry.date} <Icon name="stethoscope" /></h3>
@@ -236,12 +237,12 @@ const HealthCheckView: React.FC<{ entry: HealthCheckEntry, diagnoses: DiagnosisM
             <DiagnosisView entry={entry} diagnoses={diagnoses} />
         </ul>
         <div>Health rating: {healthRating(entry.healthCheckRating)}</div>
-    </>
-}
+    </>;
+};
 
 interface DiagnosisViewProps {
-    entry: Entry,
-    diagnoses: DiagnosisMap,
+    entry: Entry;
+    diagnoses: DiagnosisMap;
 }
 
 const DiagnosisView = ({ entry, diagnoses }: DiagnosisViewProps) => {
@@ -251,13 +252,13 @@ const DiagnosisView = ({ entry, diagnoses }: DiagnosisViewProps) => {
         }
 
         return diagnoses[code].name;
-    }
+    };
 
     return <>{
         entry.diagnosisCodes?.map(c => {
-            return <li key={c}>{c} {getDiagnosisName(c, diagnoses)}</li>
+            return <li key={c}>{c} {getDiagnosisName(c, diagnoses)}</li>;
         })
-    }</>
-}
+    }</>;
+};
 
 export default PatientView;
