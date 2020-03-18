@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Patient, Gender, Diagnosis, Entry } from "../types";
+import { HealthRating, Patient, Gender, Diagnosis, Entry, HospitalEntry, HealthCheckEntry, OccupationalHealthcareEntry } from "../types";
 import { RouteComponentProps } from 'react-router-dom';
 import { apiBaseUrl } from "../constants";
+import { Segment, Icon } from 'semantic-ui-react';
 import axios from "axios";
 import { useStateValue } from '../state';
 import { updatePatient } from '../state/reducer';
@@ -50,29 +51,22 @@ const PatientView: React.FC<RouteComponentProps<{ id: string | undefined }>> = (
         </div>;
     }
 
-    const genderAbbr = (gender: Gender) => {
-        let genderAbbr;
-
+    const genderAbbr = (gender: Gender): "man" | "woman" | "other gender vertical" => {
         switch (gender) {
             case Gender.Male:
-                genderAbbr = "M";
-                break;
+                return "man";
             case Gender.Female:
-                genderAbbr = "F";
-                break;
+                return "woman";
             case Gender.Other:
-                genderAbbr = "O";
-                break;
+                return "other gender vertical";
             default:
                 const n: never = gender;
-                break;
+                throw new Error('never gender');
         };
-
-        return genderAbbr;
     }
 
     return <div>
-        <h2>{patient.name} [{genderAbbr(patient.gender)}]</h2>
+        <h2>{patient.name} <Icon name={genderAbbr(patient.gender)} /></h2>
         <div>ssn: {patient.ssn}</div>
         <div>occupation: {patient.occupation}</div>
         <h3>entries</h3>
@@ -103,21 +97,89 @@ const Entries = ({ entries }: EntriesProps) => {
     }, [])
 
     return <>{entries.map(e => {
-        return <div key={e.id}>
-            <div>{e.date} {e.description}</div>
-            <ul>
-                <EntryView entry={e} diagnoses={diagnoses} />
-            </ul>
-        </div>
+        return <Segment key={e.id}>
+            <EntryDetails entry={e} diagnoses={diagnoses} />
+        </Segment>
     })}</>
 }
 
-interface EntryViewProps {
+const EntryDetails: React.FC<{ entry: Entry, diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
+    switch (entry.type) {
+        case "Hospital":
+            return <HospitalEntryView entry={entry} diagnoses={diagnoses} />;
+        case "OccupationalHealthcare":
+            return <OccupationalHealthcareView entry={entry} diagnoses={diagnoses} />;
+        case "HealthCheck":
+            return <HealthCheckView entry={entry} diagnoses={diagnoses} />;
+        default:
+            const n: never = entry;
+            throw new Error('never type');
+    }
+}
+
+const HospitalEntryView: React.FC<{ entry: HospitalEntry, diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
+    return <>
+        <h3>{entry.date} <Icon name="hospital outline" /></h3>
+        <div>{entry.description}</div>
+        <div>discharged due to {entry.discharge.criteria} on {entry.discharge.date}</div>
+        <ul>
+            <DiagnosisView entry={entry} diagnoses={diagnoses} />
+        </ul>
+    </>
+}
+
+const OccupationalHealthcareView: React.FC<{ entry: OccupationalHealthcareEntry, diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
+    const sickLeave = (leave: { startDate: string, endDate: string } | undefined) => {
+        if (leave) {
+            return <div>Sick leave: {leave.startDate} - {leave.endDate}</div>
+        } else {
+            return <></>
+        }
+    }
+
+    return <>
+        <h3>{entry.date} <Icon name="doctor" /> {entry.employerName}</h3>
+        {sickLeave(entry.sickLeave)}
+        <div>{entry.description}</div>
+        <ul>
+            <DiagnosisView entry={entry} diagnoses={diagnoses} />
+        </ul>
+    </>
+}
+
+const HealthCheckView: React.FC<{ entry: HealthCheckEntry, diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
+    const healthRating = (rating: HealthRating): string => {
+        switch (rating) {
+            case HealthRating.Healthy:
+                return 'healthy';
+            case HealthRating.LowRisk:
+                return 'low risk';
+            case HealthRating.HighRisk:
+                return 'high risk';
+            case HealthRating.CriticalRisk:
+                return 'critical risk';
+            default:
+                const n: never = rating;
+                throw new Error('never rating');
+        }
+    }
+
+    return <>
+        <h3>{entry.date} <Icon name="stethoscope" /></h3>
+        <div>{entry.description}</div>
+        <ul>
+            <DiagnosisView entry={entry} diagnoses={diagnoses} />
+        </ul>
+        <div>Health rating: {healthRating(entry.healthCheckRating)}</div>
+    </>
+}
+
+interface DiagnosisViewProps {
     entry: Entry,
     diagnoses: DiagnosisMap,
 }
 
-const EntryView = ({ entry, diagnoses }: EntryViewProps) => {
+const DiagnosisView = ({ entry, diagnoses }: DiagnosisViewProps) => {
     const getDiagnosisName = (code: string, diagnoses: DiagnosisMap): string => {
         if (!diagnoses || !(code in diagnoses)) {
             return '';
