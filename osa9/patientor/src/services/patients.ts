@@ -1,5 +1,6 @@
 import initialPatients from '../../data/patients';
 import Patient, { PatientNoSSN, NewPatient } from '../types/patient';
+import Entry from '../types/entry';
 
 let patients = initialPatients;
 
@@ -15,6 +16,15 @@ const get = (id: string): Patient | undefined => {
     return patient;
 }
 
+const getEntries = (id: string): Entry[] | undefined => {
+    const patient = get(id);
+    if (patient === undefined) {
+        return undefined;
+    }
+
+    return patient.entries;
+}
+
 const add = (newPatient: NewPatient): Patient => {
     const patient: Patient = {
         id: String(patients.length),
@@ -24,4 +34,13 @@ const add = (newPatient: NewPatient): Patient => {
     return patient;
 }
 
-export default { getAll, get, add };
+const addEntry = (patient: Patient, entry: Entry): Patient => {
+    const updatedPatient: Patient = {
+        ...patient,
+        entries: patient.entries.concat(entry),
+    }
+    patients = patients.filter(p => p.id !== patient.id).concat(updatedPatient);
+    return updatedPatient;
+}
+
+export default { getAll, get, add, getEntries, addEntry };
