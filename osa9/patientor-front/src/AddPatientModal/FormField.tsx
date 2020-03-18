@@ -21,17 +21,17 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   label,
   options
 }: SelectFieldProps) => (
-  <Form.Field>
-    <label>{label}</label>
-    <Field as="select" name={name} className="ui dropdown">
-      {options.map(option => (
-        <option key={option.value} value={option.value}>
-          {option.label || option.value}
-        </option>
-      ))}
-    </Field>
-  </Form.Field>
-);
+    <Form.Field>
+      <label>{label}</label>
+      <Field as="select" name={name} className="ui dropdown">
+        {options.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.label || option.value}
+          </option>
+        ))}
+      </Field>
+    </Form.Field>
+  );
 
 interface TextProps extends FieldProps {
   label: string;
@@ -43,14 +43,14 @@ export const TextField: React.FC<TextProps> = ({
   label,
   placeholder
 }) => (
-  <Form.Field>
-    <label>{label}</label>
-    <Field placeholder={placeholder} {...field} />
-    <div style={{ color:'red' }}>
-      <ErrorMessage name={field.name} />
-    </div>
-  </Form.Field>
-);
+    <Form.Field>
+      <label>{label}</label>
+      <Field placeholder={placeholder} {...field} />
+      <div style={{ color: 'red' }}>
+        <ErrorMessage name={field.name} />
+      </div>
+    </Form.Field>
+  );
 
 /*
   for exercises 9.24.-
@@ -60,14 +60,15 @@ interface NumberProps extends FieldProps {
   errorMessage?: string;
   min: number;
   max: number;
+  enabled: boolean;
 }
 
-export const NumberField: React.FC<NumberProps> = ({ field, label, min, max }) => (
-  <Form.Field>
+export const NumberField: React.FC<NumberProps> = ({ field, label, min, max, enabled }) => (
+  <Form.Field disabled={!enabled}>
     <label>{label}</label>
     <Field {...field} type='number' min={min} max={max} />
 
-    <div style={{ color:'red' }}>
+    <div style={{ color: 'red' }}>
       <ErrorMessage name={field.name} />
     </div>
   </Form.Field>
@@ -76,11 +77,13 @@ export const NumberField: React.FC<NumberProps> = ({ field, label, min, max }) =
 export const DiagnosisSelection = ({
   diagnoses,
   setFieldValue,
-  setFieldTouched
+  setFieldTouched,
+  enabled,
 }: {
   diagnoses: Diagnosis[];
   setFieldValue: FormikProps<{ diagnosisCodes: string[] }>["setFieldValue"];
   setFieldTouched: FormikProps<{ diagnosisCodes: string[] }>["setFieldTouched"];
+  enabled: boolean;
 }) => {
   const field = "diagnosisCodes";
   const onChange = (
@@ -98,7 +101,7 @@ export const DiagnosisSelection = ({
   }));
 
   return (
-    <Form.Field>
+    <Form.Field disabled={!enabled}>
       <label>Diagnoses</label>
       <Dropdown
         fluid

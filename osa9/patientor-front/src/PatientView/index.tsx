@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { HealthRating, Patient, Gender, Diagnosis, Entry, HospitalEntry, HealthCheckEntry, OccupationalHealthcareEntry } from "../types";
+import { HealthRating, Patient, Gender, Diagnosis, Entry, HospitalEntry, HealthCheckEntry, OccupationalHealthcareEntry, EntryType } from "../types";
 import { RouteComponentProps } from 'react-router-dom';
 import { apiBaseUrl } from "../constants";
-import { Segment, Icon } from 'semantic-ui-react';
+import { Segment, Icon, Button } from 'semantic-ui-react';
 import axios from "axios";
 import { useStateValue } from '../state';
-import { updatePatient } from '../state/reducer';
+import { updatePatient, addEntry } from '../state/reducer';
 import { isArray } from 'util';
+import { EntryFormValues } from '../AddEntryModal/AddEntryForm';
+import AddEntryModal from '../AddEntryModal';
 
 type DiagnosisMap = { [id: string]: Diagnosis } | undefined | null;
 
@@ -17,7 +19,63 @@ const PatientView: React.FC<RouteComponentProps<{ id: string | undefined }>> = (
     }
 
     const [state, dispatch] = useStateValue();
+    const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+    const [error, setError] = React.useState<string | undefined>(undefined);
     const [patient, setPatient] = useState<Patient | undefined | null>(undefined);
+
+    const openModal = (): void => setModalOpen(true);
+
+    const closeModal = (): void => {
+        setModalOpen(false);
+        setError(undefined);
+    };
+
+    const submitNewEntry = async (patient: Patient, values: EntryFormValues) => {
+        try {
+            const {
+                date,
+                specialist,
+                diagnosisCodes,
+                description,
+                healthCheckRating,
+                dischargeDate,
+                dischargeCriteria,
+                employerName,
+                sickLeaveStartDate,
+                sickLeaveEndDate,
+                type,
+            } = values;
+
+            const postData = {
+                date,
+                specialist,
+                diagnosisCodes,
+                description,
+                healthCheckRating,
+                discharge: {
+                    date: dischargeDate,
+                    criteria: dischargeCriteria,
+                },
+                employerName,
+                sickLeave: {
+                    startDate: sickLeaveStartDate,
+                    endDate: sickLeaveEndDate,
+                },
+                type,
+            };
+
+            const { data: updatedPatient } = await axios.post<Patient>(
+                `${apiBaseUrl}/patients/${patient.id}/entries`,
+                postData
+            );
+            console.log('added entry to', updatedPatient);
+            dispatch(updatePatient(updatedPatient));
+            closeModal();
+        } catch (e) {
+            console.error(e.response.data);
+            setError(e.response.data.error);
+        }
+    };
 
     useEffect(() => {
         const existing = state.patients[id];
@@ -36,7 +94,7 @@ const PatientView: React.FC<RouteComponentProps<{ id: string | undefined }>> = (
         } else {
             setPatient(existing);
         }
-    }, []);
+    }, [state.patients]);
 
 
     if (patient === undefined) {
@@ -71,6 +129,13 @@ const PatientView: React.FC<RouteComponentProps<{ id: string | undefined }>> = (
         <div>occupation: {patient.occupation}</div>
         <h3>entries</h3>
         <Entries entries={patient.entries} />
+        <AddEntryModal
+            modalOpen={modalOpen}
+            onSubmit={(values) => submitNewEntry(patient, values)}
+            error={error}
+            onClose={closeModal}
+        />
+        <Button onClick={() => openModal()}>Add New Entry</Button>
     </div>
 }
 
@@ -105,11 +170,11 @@ const Entries = ({ entries }: EntriesProps) => {
 
 const EntryDetails: React.FC<{ entry: Entry, diagnoses: DiagnosisMap }> = ({ entry, diagnoses }) => {
     switch (entry.type) {
-        case "Hospital":
+        case EntryType.Hospital:
             return <HospitalEntryView entry={entry} diagnoses={diagnoses} />;
-        case "OccupationalHealthcare":
+        case EntryType.OccupationalHealthcare:
             return <OccupationalHealthcareView entry={entry} diagnoses={diagnoses} />;
-        case "HealthCheck":
+        case EntryType.HealthCheck:
             return <HealthCheckView entry={entry} diagnoses={diagnoses} />;
         default:
             const n: never = entry;

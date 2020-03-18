@@ -134,7 +134,6 @@ router.post('/:id/entries', (req, res) => {
                 const occuPatient = patientsService.addEntry(patient, occupationEntry);
                 res.send(occuPatient);
             }
-
             break;
         default:
             const n: never = type;
